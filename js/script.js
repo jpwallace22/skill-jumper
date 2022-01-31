@@ -11,7 +11,7 @@
       "JavaScript",
       "CSS3",
       "HTML5",
-      "Git/GitHub",
+      "Git/CLI",
       "jQuery",
       "Photoshop",
       "Illustrator",
@@ -31,7 +31,12 @@
       "VS Code",
       "Mobile First",
       "Leadership",
-      "JSX",
+      "React",
+      "Redux",
+      "NextJS",
+      "MongoDB",
+      "REST API",
+      "Mongoose",
     ],
     jumpSound = new Audio("sounds/jump.wav"),
     bgMusic = new Audio("sounds/chiptronical.ogg"),
@@ -147,7 +152,7 @@
   function jump() {
     clearInterval(downTimerId); // clear fall function
     if (audioOn) {
-    jumpSound.play();
+      jumpSound.play();
     }
     isJumping = true;
     upTimerId = setInterval(() => {
@@ -265,7 +270,7 @@
     // clears all Timers
     bgMusic.pause();
     if (audioOn) {
-    deathSound.play();
+      deathSound.play();
     }
     clearInterval(upTimerId);
     clearInterval(downTimerId);
@@ -350,16 +355,16 @@
       });
   }
 
-  function toggleAudio(){
+  function toggleAudio() {
     if (audioOn) {
       audioOn = false;
       bgMusic.pause();
-      $(this).css({"background-image" : "url(images/sound-off.png)"})
+      $(this).css({ "background-image": "url(images/sound-off.png)" });
     } else {
       audioOn = true;
-      $(this).css({"background-image" : "url(images/sound-on.png)"})
-      if(gameRunning){
-      bgMusic.play();
+      $(this).css({ "background-image": "url(images/sound-on.png)" });
+      if (gameRunning) {
+        bgMusic.play();
       }
     }
   }
