@@ -1,49 +1,44 @@
 "use strict";
 (() => {
-  // wrapped in an iffy
-
-  const // constant variables
-    gameField = $(".game-field"),
+  const gameField = $(".game-field"),
     jumper = $('<div class="jumper">'),
     media = window.matchMedia("(max-width: 600px)"),
     overlay = $(".start-screen"),
     skillsList = [
       "JavaScript",
+      "Typescript",
+      "Storybook",
+      "MUI",
       "CSS3",
       "HTML5",
       "Git/CLI",
       "jQuery",
       "Photoshop",
       "Illustrator",
-      "InDesign",
+      "GraphQL",
       "Figma",
       "UX/UI",
       "Eating Tacos",
       "Communication",
       "Punctual",
-      "WordPress",
       "Debugging",
       "Teamwork",
-      "Googling",
+      "MySQL",
       "DevTools",
-      "SEO",
-      "Node.js",
-      "VS Code",
-      "Mobile First",
+      "Gatsby",
+      "NodeJS",
       "Leadership",
-      "React",
+      "ReactJS",
       "Redux",
       "NextJS",
       "MongoDB",
       "REST API",
-      "Mongoose",
     ],
     jumpSound = new Audio("sounds/jump.wav"),
     bgMusic = new Audio("sounds/chiptronical.ogg"),
     deathSound = new Audio("sounds/gameover.wav");
 
-  let // non-constant variables
-    startPoint = 150,
+  let startPoint = 150,
     jumperLeftSpace = 50,
     jumperBottomSpace = startPoint,
     movingSkillsChance = 10,
@@ -65,13 +60,10 @@
     gameRunning = false,
     jumpHeight = 299; // ADJUST this number controls the height of the jump
 
-  /* ^^^^^ GLOBAL VARIABLES ^^^^^ */
-
-  //contructor to build new skill platforms
   class Skill {
     constructor(newSkillBottom) {
-      this.bottom = newSkillBottom; // defined in create skills
-      this.left = randomNum(gameField.innerWidth() - 125); // random number inside the gamefield
+      this.bottom = newSkillBottom;
+      this.left = randomNum(gameField.innerWidth() - 125);
       this.element = $(
         '<div class="skill">' +
           skillsList[randomNum(skillsList.length - 1)] +
@@ -79,17 +71,15 @@
       ); // generates skill as div with class of skill and random skill from skills-Arr
 
       const element = this.element;
-      gameField.append(element); // add to game field
-      element.css({ left: this.left + "px", bottom: this.bottom + "px" }); // set left and bottom
+      gameField.append(element);
+      element.css({ left: this.left + "px", bottom: this.bottom + "px" });
     }
   }
 
-  //generates a random number from 0 to argument
   function randomNum(num) {
     return Math.floor(Math.random() * num + 1);
   }
 
-  // generates a div in the gamefield for the jumper
   function createJumper() {
     gameField.append(jumper);
     jumperLeftSpace = skillsArr[0].left;
@@ -99,33 +89,30 @@
     });
   }
 
-  // generates the skill platforms
   function createSkills() {
     for (let i = 0; i < skillCount; i++) {
-      let skillGap = gameField.innerHeight() / skillCount; // spaces evenly throughout gamefield
-      let newSkillBottom = 100 + i * skillGap; // starts the skills at 100px from bottom at sets the bottom as the gap
+      let skillGap = gameField.innerHeight() / skillCount;
+      let newSkillBottom = 100 + i * skillGap;
       let newSkill = new Skill(newSkillBottom);
       skillsArr.push(newSkill);
     }
   }
 
-  // move the platforms, but only when the jumper is a certain height
   function movePlatforms() {
-    // if the jumper is about the bottom 6th of the gamefeild the skills move down
     if (jumperBottomSpace > gameField.innerHeight() / 6) {
-      skillsArr.forEach((skill) => {
-        skill.bottom -= skillSpeed; // moves down 4 pixels at a time
+      skillsArr.forEach(skill => {
+        skill.bottom -= skillSpeed;
         let element = skill.element;
-        element.css({ bottom: skill.bottom + "px" }); // applies the style to bottom of each skill
+        element.css({ bottom: skill.bottom + "px" });
 
         // when the skill gets to the bottom, its deleted and replaced
         if (skill.bottom < 4) {
           let firstSkill = skillsArr[0].element;
           let skillMoveSwap = "right";
-          firstSkill.remove(); // if it gets to the bottom, visually remove the first skill
-          skillsArr.shift(); // remove it from the array
-          let newSkill = new Skill(gameField.height()); // create a new one at the top
-          skillsArr.push(newSkill); // add it to array
+          firstSkill.remove();
+          skillsArr.shift();
+          let newSkill = new Skill(gameField.height());
+          skillsArr.push(newSkill);
           if (1 == randomNum(movingSkillsChance)) {
             window.requestAnimationFrame(() => {
               let newElement = newSkill.element;
@@ -150,7 +137,7 @@
 
   // makes the jumper jump on a timer and evokes the fall after a certain distance
   function jump() {
-    clearInterval(downTimerId); // clear fall function
+    clearInterval(downTimerId);
     if (audioOn) {
       jumpSound.play();
     }
@@ -161,21 +148,20 @@
       } else if (visualRight && isJumping) {
         jumper.css({ backgroundPositionX: `-10px` });
       }
-      jumperBottomSpace += 20; // ADJUST this to change speed of jump
-      jumper.css({ bottom: jumperBottomSpace + "px" }); // applied pixel change to jumperbottom
+      jumperBottomSpace += 20;
+      jumper.css({ bottom: jumperBottomSpace + "px" });
       if (jumperBottomSpace > startPoint + jumpHeight) {
         score += Math.floor(jumpHeight / 10);
         $(".score").text(`Score:${score}`);
-        fall(); // ends jump and starts fall
+        fall();
       }
     }, 30);
     moveBackground();
     levelUp();
   }
 
-  // makes the jumper fall on a timer
   function fall() {
-    clearInterval(upTimerId); // clears jump function
+    clearInterval(upTimerId);
     isJumping = false;
     downTimerId = setInterval(() => {
       if (visualLeft && !isJumping) {
@@ -183,11 +169,11 @@
       } else if (visualRight && !isJumping) {
         jumper.css({ backgroundPositionX: `-170px` });
       }
-      jumperBottomSpace -= 14; // ADJUST this for falling speed
-      jumper.css({ bottom: jumperBottomSpace + "px" }); // applies pixel change to jumperbottom
-      skillsArr.forEach((skill) => {
+      jumperBottomSpace -= 14;
+      jumper.css({ bottom: jumperBottomSpace + "px" });
+      skillsArr.forEach(skill => {
         if (
-          jumperBottomSpace >= skill.bottom && // if jumper is within the bounds of a skill platform and not jumping, redesignate start ppoint and jump
+          jumperBottomSpace >= skill.bottom &&
           jumperBottomSpace <= skill.bottom + skill.element.innerHeight() &&
           jumperLeftSpace + jumper.width() >= skill.left &&
           jumperLeftSpace <= skill.left + skill.element.width() &&
@@ -197,14 +183,12 @@
           jump();
         }
         if (jumperBottomSpace <= 0) {
-          // if you hit the bottom, runs gave over function
           gameOver();
         }
       });
-    }, 30); // sets interval
-  } // close fall
+    }, 30);
+  }
 
-  // if gameisnt over and youre not already moving in that direction, move in that direction
   function controls(e) {
     if (e.which == "37" && !isGoingLeft) {
       moveLeft();
@@ -213,35 +197,31 @@
     }
   }
 
-  // move left at a non-variable speed through the gamefield until contact with left side
   function moveLeft() {
     isGoingRight = false;
     isGoingLeft = true;
     visualLeft = true;
     visualRight = false;
     jumper.css({ backgroundPositionX: `-90px` });
-    clearInterval(rightTimerId); // end going right
+    clearInterval(rightTimerId);
     leftTimerId = setInterval(() => {
       if (jumperLeftSpace >= 1) {
-        // keeps within left side of gamefield
-        jumperLeftSpace -= 2; // ADJUST change this to change speed
+        jumperLeftSpace -= 2;
         jumper.css({ left: jumperLeftSpace + "px" });
       }
     }, 1);
   }
 
-  // move left at a non-variable speed through the gamefield until contact with right side
   function moveRight() {
     isGoingLeft = false;
     isGoingRight = true;
     visualLeft = false;
     visualRight = true;
     jumper.css({ backgroundPositionX: `-10px` });
-    clearInterval(leftTimerId); // end going left
+    clearInterval(leftTimerId);
     rightTimerId = setInterval(() => {
       if (jumperLeftSpace + jumper.width() <= gameField.width()) {
-        // keeps withing right side
-        jumperLeftSpace += 2; // change this to change speed
+        jumperLeftSpace += 2;
         jumper.css({ left: jumperLeftSpace + "px" });
       }
     }, 1);
@@ -255,19 +235,15 @@
     isGoingLeft = false;
   }
 
-  // use the score to slowly shift the background pos
   function moveBackground() {
-    let integer = score / 50; // decrease this numnber to make it change at a faster pace
+    let integer = score / 50;
     if (integer >= 0 && integer <= 100) {
-      // wont throw error or try to continue changing if at top (5000px)
       gameField.css({ backgroundPositionY: `${100 - integer}%` });
     }
   }
 
-  // signify end of game. Cease all movement and display score
   function gameOver() {
     gameRunning = false;
-    // clears all Timers
     bgMusic.pause();
     if (audioOn) {
       deathSound.play();
@@ -277,10 +253,9 @@
     clearInterval(skillTimerId);
     clearInterval(leftTimerId);
     clearInterval(rightTimerId);
-    gameField.html('<div class="audio"> '); // clear gamefield
-    overlay.text(``).appendTo(gameField); // add blank overlay
-    gameField.css({ backgroundPositionY: `${100}%` }); // reset background
-    // checks local storage and creates high score
+    gameField.html('<div class="audio"> ');
+    overlay.text(``).appendTo(gameField);
+    gameField.css({ backgroundPositionY: `${100}%` });
     if (localStorage.getItem("score", score.toString()) < score) {
       localStorage.setItem("score", score.toString());
       var highScore = localStorage.getItem("score", score.toString());
@@ -289,7 +264,6 @@
         ? localStorage.getItem("score", score.toString())
         : 0;
     }
-    // adds the game over screen
     overlay.html(`<h3>GAME OVER!</h3>
   <h3>Score:${score}</h3>
   <h4>Best:${highScore}</h4>
@@ -298,8 +272,7 @@
   <p class="mobile">Tap <b>START</b> to start.</p>
   <a class="mobile" href="javascript:;">Start</a>
   <a class="desktop" href="javascript:;">PRESS SPACE</a>`);
-    // resets ALL global variables
-    bgMusic.currentTime = 0; // reset music
+    bgMusic.currentTime = 0;
     startPoint = 150;
     jumperLeftSpace = 50;
     jumperBottomSpace = startPoint;
@@ -314,7 +287,6 @@
     skillSpeed = 4;
     score = 0;
     jumpHeight = 299;
-    // new event listeners for gameover screen
     $("a.desktop").on("click", start);
     $(document).keyup(function (e) {
       if (e.which == "32") {
@@ -324,7 +296,6 @@
     $(".audio").on("click", toggleAudio);
   }
 
-  // uses the alpha axis of a phone to move left and rright depending on tilt
   function mobileControls(e) {
     const x = e.alpha;
     if (x > 180 && x < 360 && !isGoingRight) {
@@ -334,17 +305,15 @@
     }
   }
 
-  // if the screen is under 600px, change the platform count to 6
   function mediaQueries() {
     if (media.matches) {
       skillCount = 6;
     }
   }
 
-  // catches event listener and asks permision, if
   function mobileStart() {
     DeviceMotionEvent.requestPermission()
-      .then((response) => {
+      .then(response => {
         if (response == "granted") {
           start();
           window.addEventListener("deviceorientation", mobileControls);
@@ -369,7 +338,6 @@
     }
   }
 
-  // Gets harder ever 1000 points till 3k
   function levelUp() {
     if (score > 3000) {
       skillSpeed = 5.5;
@@ -387,7 +355,6 @@
     }
   }
 
-  // starts the game
   function start() {
     gameRunning = true;
     bgMusic.volume = 0.25;
@@ -398,17 +365,15 @@
     overlay.remove();
     createSkills();
     createJumper();
-    skillTimerId = setInterval(movePlatforms, 20); // ADJUST set interval to change speed of the platforms
+    skillTimerId = setInterval(movePlatforms, 20);
     jump();
-    document.addEventListener("keydown", controls); // move when key is pressed down
-    document.addEventListener("keyup", clearMovement); // cease movement when key is lifted
+    document.addEventListener("keydown", controls);
+    document.addEventListener("keyup", clearMovement);
     $('<div class="score">').prependTo(gameField);
   }
 
-  // mobile start event listener
   $("a.mobile").on("click", mobileStart);
 
-  // desktop start event listeners (click and space bar)
   $("a.desktop").on("click", start);
   $(document).keyup(function (e) {
     if (e.which == "32") {
@@ -416,7 +381,6 @@
     }
   });
 
-  //audio button
   $(".audio").on("click", toggleAudio);
 
   //prevents cross-browser zooming (to prevent cheating)
@@ -439,4 +403,4 @@
       e.preventDefault();
     }
   });
-})(); // fin
+})();
